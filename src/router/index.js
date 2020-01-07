@@ -4,6 +4,8 @@ import Router from 'vue-router';
 Vue.use(Router);
 
 export default new Router({
+    //解决路径中#/路径（哈希模式）的问题
+    mode:'history',
     routes: [
         {
             path: '/',
