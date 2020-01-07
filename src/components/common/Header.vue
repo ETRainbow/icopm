@@ -4,7 +4,7 @@
         <div class="collapse-btn" @click="collapseChage">
             <i class="el-icon-menu"></i>
         </div>
-        <div class="logo">后台管理系统</div>
+        <div class="logo">ICOPM</div>
         <div class="header-right">
             <div class="header-user-con">
                 <!-- 全屏显示 -->
@@ -50,7 +50,7 @@
             return {
                 collapse: false,
                 fullscreen: false,
-                name: 'linxin',
+                name: 'LKJ',
                 message: 2
             }
         },
@@ -65,7 +65,7 @@
             handleCommand(command) {
                 if(command == 'loginout'){
                     localStorage.removeItem('ms_username')
-                    this.$router.push('/login');
+                    this.$router.replace('/login');
                 }
             },
             // 侧边栏折叠
