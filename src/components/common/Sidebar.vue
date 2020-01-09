@@ -3,13 +3,13 @@
         <el-menu class="sidebar-el-menu" :default-active="onRoutes" :collapse="collapse" background-color="#324157"
             text-color="#bfcbd9" active-text-color="#20a0ff" unique-opened router>
             <template v-for="item in items">
-                <template v-if="item.subs">
-                    <el-submenu :index="item.index" :key="item.index">
+                <template v-if="item.menuItems">
+                    <el-submenu :index="item.menuCode" :key="item.menuCode">
                         <template slot="title">
-                            <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+                            <i :class="item.menuIcon"></i><span slot="title">{{ item.menuName }}</span>
                         </template>
-                        <template v-for="subItem in item.subs">
-                            <el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
+                        <template v-for="subItem in item.menuItems">
+                            <!--<el-submenu v-if="subItem.subs" :index="subItem.index" :key="subItem.index">
                                 <template slot="title">{{ subItem.title }}</template>
                                 <el-menu-item v-for="(threeItem,i) in subItem.subs" :key="i" :index="threeItem.index">
                                     {{ threeItem.title }}
@@ -17,15 +17,23 @@
                             </el-submenu>
                             <el-menu-item v-else :index="subItem.index" :key="subItem.index">
                                 {{ subItem.title }}
-                            </el-menu-item>
+                            </el-menu-item>-->
+                          <el-menu-item :index="subItem.modulePath" :key="subItem.moduleCode">
+                            {{ subItem.moduleName }}
+                          </el-menu-item>
                         </template>
                     </el-submenu>
                 </template>
-                <template v-else>
-                    <el-menu-item :index="item.index" :key="item.index">
-                        <i :class="item.icon"></i><span slot="title">{{ item.title }}</span>
+              <template v-else>
+                <el-menu-item >
+                  <i ></i><span slot="title">请联系管理员配置模块权限！</span>
+                </el-menu-item>
+              </template>
+                <!--<template v-else>
+                    <el-menu-item :index="item.menuIcon" :key="item.menuIcon">
+                        <i :class="item.menuIcon"></i><span slot="title">{{ item.menuIcon }}</span>
                     </el-menu-item>
-                </template>
+                </template>-->
             </template>
         </el-menu>
     </div>
@@ -36,8 +44,10 @@
     export default {
         data() {
             return {
-                collapse: false,
-                items: [
+              collapse: false,
+              items:{}
+                /*items: [
+                  /!*
                     {
                         icon: 'el-icon-lx-home',
                         index: 'dashboard',
@@ -127,7 +137,8 @@
                             }
                         ]
                     }
-                ]
+                    *!/
+                ]*/
             }
         },
         computed:{
@@ -139,8 +150,20 @@
             // 通过 Event Bus 进行组件间通信，来折叠侧边栏
             bus.$on('collapse', msg => {
                 this.collapse = msg;
-            })
-        }
+            });
+
+          //this.initMenu();
+        },
+      mounted(){
+        this.initMenu();
+      },
+      methods:{
+          initMenu(){
+            this.items=this.$store.getters.getMenuInfo;
+            console.log("*****");
+            console.log(this.items);
+          }
+      }
     }
 </script>
 
