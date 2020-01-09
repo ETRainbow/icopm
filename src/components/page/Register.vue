@@ -1,7 +1,7 @@
 <template>
   <div class="login-wrap">
     <div class="ms-login">
-      <div class="ms-title">ICOPM后台管理系统</div>
+      <div class="ms-title">ICOPM快速注册</div>
       <el-form :model="ruleForm" :rules="rules" ref="ruleForm" label-width="0px" status-icon class="ms-content">
         <el-form-item prop="username">
           <el-input v-model="ruleForm.username" placeholder="手机号">
@@ -27,16 +27,16 @@
         </el-form-item>
 
         <div class="login-btn">
-          <el-button type="primary" @click="submitForm('ruleForm')">登录</el-button>
+          <el-button type="primary" @click="submitForm('ruleForm')">快速注册</el-button>
         </div>
       </el-form>
-      <p class="login-tips"><a @click="toRegister">快速注册</a></p>
+      <p class="login-tips" @click="toLogin">登录</p>
     </div>
   </div>
 </template>
 
 <script>
-  import {requestLogin, requestVerificationCode} from 'network/query/commonReq';
+  import {requestRegister, requestVerificationCode} from 'network/query/commonReq';
 
   export default {
     mounted() {
@@ -90,15 +90,15 @@
             console.debug("parameters:"+parameters);
 
             //登录验证
-            requestLogin(parameters).then((res) =>{
+            requestRegister(parameters).then((res) =>{
 
-              this.initBaseInfo(res);
-
-              this.$router.push('/');
+              //初始化登录用户信息
+              this.$store.commit('initUserInfo',res.BODY);
+              this.$router.push('/login');
 
             }).catch(err => {
-              console.error("登录异常");
-              this.$message.error("登录失败：" + err);
+              console.error("注册失败！");
+              this.$message.error("注册失败：" + err);
             });
 
           } else {
@@ -118,28 +118,8 @@
         });
       },
       //跳转在注册
-      toRegister(){
-        this.$router.push('/register');
-      },
-      initBaseInfo(res){
-        //初始化登录用户信息
-        sessionStorage.clear();
-        sessionStorage.setItem("userId", res.BODY.userId);
-        sessionStorage.setItem("menuInfo", JSON.stringify(res.BODY.menuInfos));
-        //初始化用户可以访问根资源集合
-        const menuInfo = res.BODY.menuInfos;
-        const sources = [];
-
-        for (let i = 0; i <menuInfo.length; i++) {
-          const menu = menuInfo[i];
-          for(let j = 0 ; j < menu.menuItems.length;j++){
-            const items = menu.menuItems[j];
-            sources.push(items.modulePath);
-          }
-        }
-        //登录存储信息前，先销毁一起的数据
-        this.$store.commit('destoryStateInfo');
-        sessionStorage.setItem("sources", JSON.stringify(sources));
+      toLogin(){
+        this.$router.push('/login');
       }
     }
   }

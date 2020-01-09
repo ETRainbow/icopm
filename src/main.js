@@ -24,17 +24,40 @@ const i18n = new VueI18n({
     messages
 });
 
-//使用钩子函数对路由进行权限跳转
-/*router.beforeEach((to, from, next) => {
-  // 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
+//使用导航卫士钩子函数对路由进行权限跳转
+router.beforeEach((to, from, next) => {
+
+  //判断是否进行权限控制
+  if (to.matched.some(record => record.meta.requiresAuth)) {
+    console.log("是否进行访问权限校验："+to.meta.requiresAuth);
+    console.log(to.meta.requiresAuth);
+    const sources =JSON.parse(sessionStorage.getItem("sources"));
+    const toPath = to.path;
+    const result = sources.filter(function (currentValue) {
+      return currentValue === toPath;
+    });
+    //用户没有匹配的访问的根资源权限，提时无权限！
+    if(result.length > 0){
+      next();
+    }else {
+      next({
+        path: '/403'
+      });
+    }
+  } else {
+    console.debug("是否进行访问权限校验："+to.meta.requiresAuth);
+    next() // make sure to always call next()!
+  }
+
+  /*// 简单的判断IE10及以下不进入富文本编辑器，该组件不兼容
   if (navigator.userAgent.indexOf('MSIE') > -1 && to.path === '/editor') {
     Vue.prototype.$alert('vue-quill-editor组件不兼容IE10及以下浏览器，请使用更高版本的浏览器查看', '浏览器不兼容通知', {
       confirmButtonText: '确定'
     });
   } else {
     next();
-  }
-});*/
+  }*/
+});
 
 
 new Vue({
