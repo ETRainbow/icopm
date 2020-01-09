@@ -10,14 +10,15 @@ const store = new Vuex.Store({
     userId:'',
     roleInfoList:'',
     userInfo:'',
-    menuInfo:''
+    menuInfo:{}
   },
   mutations:{
     initUserInfo(state,jsonDate){
       state.userId=jsonDate.userId;
       state.roleInfoList=JSON.stringify(jsonDate.roleInfoList);
       state.userInfo=JSON.stringify(jsonDate.userInfo);
-      state.menuInfo=JSON.stringify(jsonDate.menuInfos);
+      state.menuInfo=jsonDate.menuInfos;
+      // state.menuInfo=JSON.stringify(jsonDate.menuInfos);
     },
     destoryUserInfo(state){
       state.userId='';
@@ -30,7 +31,9 @@ const store = new Vuex.Store({
 
   },
   getters:{
-
+    getMenuInfo(state){
+      return state.menuInfo;
+    }
   },
   modules:{
 

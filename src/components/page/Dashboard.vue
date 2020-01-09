@@ -10,9 +10,10 @@
                             <div>{{role}}</div>
                         </div>
                     </div>
-                    <div class="user-info-list">上次登录时间：<span>2018-01-01</span></div>
-                    <div class="user-info-list">上次登录地点：<span>东莞</span></div>
+                    <div class="user-info-list">上次登录时间：<span>2020-01-07</span></div>
+                    <div class="user-info-list">上次登录地点：<span>上海</span></div>
                 </el-card>
+              <!--
                 <el-card shadow="hover" style="height:252px;">
                     <div slot="header" class="clearfix">
                         <span>语言详情</span>
@@ -26,6 +27,7 @@
                     HTML
                     <el-progress :percentage="0.9" color="#f56c6c"></el-progress>
                 </el-card>
+              -->
             </el-col>
             <el-col :span="16">
                 <el-row :gutter="20" class="mgb20">
