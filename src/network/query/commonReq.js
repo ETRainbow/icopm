@@ -17,6 +17,23 @@ export function requestLogin(parameters) {
   });
 }
 
+/**
+ * icopm注册请求。
+ *
+ */
+export function requestRegister(parameters) {
+  console.log("parameters=" + parameters);
+  return commonRequest({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url:'/register/registerICOPM.json',
+    method:'post',
+    data:parameters,
+    responseType:'json'
+  });
+}
+
 
 /**
  *  验证码获取

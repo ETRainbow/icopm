@@ -159,9 +159,12 @@
       },
       methods:{
           initMenu(){
+            const menuInfo = this.$store.getters.getMenuInfo;
+            //store 中的内容来自登录后的sessionStorage,这里这样处理，防止刷新页面vuex中的store存的数据丢失
+            if(null == menuInfo || JSON.stringify(menuInfo).length <= 2){
+              this.$store.commit('initMenuInfo');
+            }
             this.items=this.$store.getters.getMenuInfo;
-            console.log("*****");
-            console.log(this.items);
           }
       }
     }

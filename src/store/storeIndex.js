@@ -13,18 +13,15 @@ const store = new Vuex.Store({
     menuInfo:{}
   },
   mutations:{
-    initUserInfo(state,jsonDate){
-      state.userId=jsonDate.userId;
-      state.roleInfoList=JSON.stringify(jsonDate.roleInfoList);
-      state.userInfo=JSON.stringify(jsonDate.userInfo);
-      state.menuInfo=jsonDate.menuInfos;
-      // state.menuInfo=JSON.stringify(jsonDate.menuInfos);
+    initMenuInfo(state){
+      state.userId=sessionStorage.getItem("userId");
+      state.menuInfo=JSON.parse(sessionStorage.getItem("menuInfo"));
     },
-    destoryUserInfo(state){
+    destoryStateInfo(state){
       state.userId='';
       state.roleInfoList='';
       state.userInfo='';
-      state.menuInfo='';
+      state.menuInfo={};
     }
   },
   actions:{
