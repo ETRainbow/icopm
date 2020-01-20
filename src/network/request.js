@@ -1,4 +1,7 @@
 import axios from 'axios';
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
+import store from '../store/storeIndex'
 
 export function commonRequest(config) {
   const instance = axios.create({
@@ -6,20 +9,33 @@ export function commonRequest(config) {
     // 这个地方会用到vue.congif.js中的代理服务的地址
     baseURL:'/icop',
     timeout:5000,
-    responseEncoding:'utf8'
+    responseEncoding:'utf8',
   });
   instance.interceptors.request.use(config=>{
+    config.headers.authorization = sessionStorage.getItem("anthInfo");
+    NProgress.start();
     return config;
   },error => {
+    NProgress.done();
     return config;
   });
   instance.interceptors.response.use(res=>{
-    if('OK' != res.data.CODE){
-
+    NProgress.done();
+    //表示请求成功
+    if(res.status == 200){
+      const authInfo = res.headers.authorization;
+      store.commit('saveAuthInfo',authInfo);
+      if(res.data.CODE == 'OK'){
+        return {status:'OK',message:res.data.MESSAGE,content:res.data.BODY};
+      }else{
+        return {status:'ERROR',message:res.data.MESSAGE,content:res.data.BODY};
+      }
     }
-    return res.data;
+    // 调用异常的情况
+    return {status:'ERROR',message:res.status,content:''};
   },error => {
-    return error;
+    NProgress.done();
+    return {status:'ERROR',message:error,content:''};
   });
   return instance(config);
 }
@@ -27,20 +43,28 @@ export function commonRequest(config) {
 export function commonRequestNoLoadding(config) {
   const instance = axios.create({
     baseURL:'/icop',
-    timeout:5000,
+    timeout:10000,
     responseEncoding:'utf8'
   });
   instance.interceptors.request.use(config=>{
+    config.headers.authorization = sessionStorage.getItem("authInfo");
     return config;
   },error => {
     return config;
   });
   instance.interceptors.response.use(res=>{
-    if('OK' != res.data.CODE){
-      return res;
+    //表示请求成功
+    if(res.status == 200){
+      if(res.data.CODE == 'OK'){
+        return {status:'OK',message:res.data.MESSAGE,content:res.data.BODY};
+      }else{
+        return {status:'ERROR',message:res.data.MESSAGE,content:res.data.BODY};
+      }
     }
-    return res.data;
+    // 调用异常的情况
+    return {status:'ERROR',message:res.status,content:''};
   },error => {
+    return {status:'ERROR',message:error,content:''};
   });
   return instance(config);
 }
