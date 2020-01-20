@@ -98,11 +98,11 @@
 
             }).catch(err => {
               console.error("登录异常");
-              this.$message.error("登录失败：" + err);
+              this.$message.error("登录失败：账号或密码错误！");
             });
 
           } else {
-            console.error('error submit!!');
+            console.error('账号或密码错误！');
             return false;
           }
         });
@@ -111,7 +111,16 @@
       //获取图片验证码
       getVerificationCode() {
         requestVerificationCode().then(res => {
-          this.verificationImg = 'data:image/jpg;base64,' + res.BODY;
+          if(typeof res == "undefined" || res.status == 'ERROR'){
+            this.$message({
+              showClose: true,
+              message: "[验证码]"+res.message,
+              type: 'error'
+            });
+            return;
+          }
+
+          this.verificationImg = 'data:image/jpg;base64,' + res.content;
         }).catch(err => {
           console.debug("图片验证码获取错误：" + err);
           this.$message.error("图片验证码获取错误：" + err);
@@ -123,11 +132,11 @@
       },
       initBaseInfo(res){
         //初始化登录用户信息
-        sessionStorage.clear();
-        sessionStorage.setItem("userId", res.BODY.userId);
-        sessionStorage.setItem("menuInfo", JSON.stringify(res.BODY.menuInfos));
+        //sessionStorage.clear();
+        sessionStorage.setItem("userId", res.content.userId);
+        sessionStorage.setItem("menuInfo", JSON.stringify(res.content.menuInfos));
         //初始化用户可以访问根资源集合
-        const menuInfo = res.BODY.menuInfos;
+        const menuInfo = res.content.menuInfos;
         const sources = [];
 
         for (let i = 0; i <menuInfo.length; i++) {
@@ -137,7 +146,7 @@
             sources.push(items.modulePath);
           }
         }
-        //登录存储信息前，先销毁一起的数据
+        //登录存储信息前，先销毁以前的数据
         this.$store.commit('destoryStateInfo');
         sessionStorage.setItem("sources", JSON.stringify(sources));
       }

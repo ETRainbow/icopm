@@ -11,6 +11,9 @@ import './assets/css/icon.css';
 import './components/common/directives';
 import "babel-polyfill";
 import store from './store/storeIndex';
+// 引入nprogress插件
+import NProgress from 'nprogress'
+import 'nprogress/nprogress.css'
 
 Vue.config.productionTip = false;
 Vue.use(VueI18n);
@@ -29,8 +32,7 @@ router.beforeEach((to, from, next) => {
 
   //判断是否进行权限控制
   if (to.matched.some(record => record.meta.requiresAuth)) {
-    console.log("是否进行访问权限校验："+to.meta.requiresAuth);
-    console.log(to.meta.requiresAuth);
+    console.debug("是否进行访问权限校验："+to.meta.requiresAuth);
     const sources =JSON.parse(sessionStorage.getItem("sources"));
     const toPath = to.path;
     const result = sources.filter(function (currentValue) {

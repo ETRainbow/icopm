@@ -10,7 +10,8 @@ const store = new Vuex.Store({
     userId:'',
     roleInfoList:'',
     userInfo:'',
-    menuInfo:{}
+    menuInfo:{},
+    authInfo:''
   },
   mutations:{
     initMenuInfo(state){
@@ -22,6 +23,10 @@ const store = new Vuex.Store({
       state.roleInfoList='';
       state.userInfo='';
       state.menuInfo={};
+    },
+    saveAuthInfo(state,authInfo){
+      state.authInfo=authInfo;
+      sessionStorage.setItem("authInfo",authInfo);
     }
   },
   actions:{
