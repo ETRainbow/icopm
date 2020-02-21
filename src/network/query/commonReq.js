@@ -8,11 +8,16 @@ export function requestLogin(parameters) {
   console.log("parameters=" + parameters);
   return commonRequest({
     headers: {
-      'Content-Type': 'application/json',
+      'Content-Type': 'application/x-www-form-urlencoded',
     },
     url:'/loginSvc/login.json',
     method:'post',
-    data:parameters,
+    params:{
+      username: parameters.username,
+      password: parameters.password,
+      validateCode: parameters.validateCode,
+      validateType: parameters.validateType,
+    },
     responseType:'json'
   });
 }
@@ -52,11 +57,14 @@ export function requestVerificationCode() {
 }
 
 /**
- * icopm后台管理请求权限等信息。
+ * 文件上传
  *
  */
-export function requestUserInfo() {
-  return commonRequest({
-    url:'/loginSvc/loginSvc.json'
+export function uploadFile (files){
+  return commonRequestNoLoadding({
+    url:'/sftp/uploadFile.json',
+    method:'post',
+    data:files,
+    responseType:'json'
   });
 }
