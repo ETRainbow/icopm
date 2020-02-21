@@ -65,7 +65,8 @@
         ruleForm: {
           username: '',
           password: '',
-          validateCode: ''
+          validateCode: '',
+          validateType: '1'
         },
         rules: {
           username: [
@@ -86,11 +87,11 @@
       submitForm(formName) {
         this.$refs[formName].validate((valid) => {
           if (valid) {
-            const parameters = JSON.stringify(this.ruleForm);
-            console.debug("parameters:"+parameters);
+            //const parameters = JSON.stringify(this.ruleForm);
+            //console.debug("parameters:"+parameters);
 
             //登录验证
-            requestLogin(parameters).then((res) =>{
+            requestLogin(this.ruleForm).then((res) =>{
 
               this.initBaseInfo(res);
 

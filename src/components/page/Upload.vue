@@ -1,60 +1,103 @@
 <template>
-    <div>
-        <div class="crumbs">
-            <el-breadcrumb separator="/">
-                <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
-                <el-breadcrumb-item>图片上传</el-breadcrumb-item>
-            </el-breadcrumb>
-        </div>
-        <div class="container">
-            <div class="content-title">支持拖拽</div>
-            <div class="plugins-tips">
-                Element UI自带上传组件。
-                访问地址：<a href="http://element.eleme.io/#/zh-CN/component/upload" target="_blank">Element UI Upload</a>
-            </div>
-            <el-upload
-                class="upload-demo"
-                drag
-                action="/api/posts/"
-                multiple>
+  <div>
+    <div class="crumbs">
+      <el-breadcrumb separator="/">
+        <el-breadcrumb-item><i class="el-icon-lx-calendar"></i> 表单</el-breadcrumb-item>
+        <el-breadcrumb-item>图片上传</el-breadcrumb-item>
+      </el-breadcrumb>
+    </div>
+    <el-row :gutter="20">
+      <el-col :span="16" class="container">
+        <el-divider content-position="center">我的文件列表</el-divider>
+        <el-table :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
+          <el-table-column label="名称" prop="name"></el-table-column>
+          <el-table-column label="上传日期" prop="date"></el-table-column>
+          <el-table-column align="right">
+            <template slot="header" slot-scope="scope">
+              <el-input v-model="search" size="mini" placeholder="输入关键字搜索"/>
+            </template>
+            <template slot-scope="scope">
+              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">查看</el-button>
+              <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
+            </template>
+          </el-table-column>
+        </el-table>
+        <el-pagination style="float: right" :page-size="2" :pager-count="11" layout="prev, pager, next" :total="20"></el-pagination>
+      </el-col>
+      <el-col :span="8">
+        <div>
+          <div class="container">
+            <el-divider content-position="left">拖拽上传</el-divider>
+            <el-row :gutter="24">
+              <el-upload class="upload-demo" drag
+                         action="#"
+                         :before-upload="beforeUpload"
+                         >
                 <i class="el-icon-upload"></i>
                 <div class="el-upload__text">将文件拖到此处，或<em>点击上传</em></div>
                 <div class="el-upload__tip" slot="tip">只能上传jpg/png文件，且不超过500kb</div>
-            </el-upload>
-            <div class="content-title">支持裁剪</div>
-            <div class="plugins-tips">
-                vue-cropperjs：一个封装了 cropperjs 的 Vue 组件。
-                访问地址：<a href="https://github.com/Agontuk/vue-cropperjs" target="_blank">vue-cropperjs</a>
-            </div>
+              </el-upload>
+            </el-row>
+
+
+            <el-divider content-position="left">图片裁剪后上传</el-divider>
             <div class="crop-demo">
-                <img :src="cropImg" class="pre-img">
-                <div class="crop-demo-btn">选择图片
-                    <input class="crop-input" type="file" name="image" accept="image/*" @change="setImage"/>
-                </div>
+              <img :src="cropImg" class="pre-img">
+              <div class="crop-demo-btn">选择图片
+                <input class="crop-input" type="file" name="image" accept="image/*" @change="setImage"/>
+              </div>
             </div>
-        
+
             <el-dialog title="裁剪图片" :visible.sync="dialogVisible" width="30%">
-                <vue-cropper ref='cropper' :src="imgSrc" :ready="cropImage" :zoom="cropImage" :cropmove="cropImage" style="width:100%;height:300px;"></vue-cropper>
-                <span slot="footer" class="dialog-footer">
+              <vue-cropper ref='cropper' :src="imgSrc" :ready="cropImage" :zoom="cropImage" :cropmove="cropImage" style="width:100%;height:300px;"></vue-cropper>
+              <span slot="footer" class="dialog-footer">
                     <el-button @click="cancelCrop">取 消</el-button>
                     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
                 </span>
             </el-dialog>
+          </div>
         </div>
-    </div>
+      </el-col>
+    </el-row>
+  </div>
+
 </template>
 
 <script>
     import VueCropper  from 'vue-cropperjs';
+    import {uploadFile} from 'network/query/commonReq';
+
     export default {
         name: 'upload',
         data: function(){
             return {
-                defaultSrc: require('../../assets/img/img.jpg'),
-                fileList: [],
-                imgSrc: '',
-                cropImg: '',
-                dialogVisible: false,
+              defaultSrc: require('../../assets/img/img.jpg'),
+              fileList: [],
+              imgSrc: '',
+              cropImg: '',
+              dialogVisible: false,
+              tableData: [{
+                date: '2016-05-02',
+                name: '王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt',
+                address: '上海市普陀区金沙江路 1518 弄'
+              }, {
+                date: '2016-05-04',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1517 弄'
+              }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1519 弄'
+              }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1519 弄'
+              }, {
+                date: '2016-05-01',
+                name: '王小虎',
+                address: '上海市普陀区金沙江路 1519 弄'
+              }],
+              search: ''
             }
         },
         components: {
@@ -81,15 +124,21 @@
                 this.dialogVisible = false;
                 this.cropImg = this.defaultSrc;
             },
-            imageuploaded(res) {
-                console.log(res)
-            },
             handleError(){
                 this.$notify.error({
                     title: '上传失败',
                     message: '图片上传接口上传失败，可更改为自己的服务器接口'
                 });
-            }
+            },
+          beforeUpload(files){
+            var fileFormData = new FormData();
+            fileFormData.set("uploadFile",files);
+            uploadFile(fileFormData).then((res) =>{
+              this.$message.success("文件上传成功！");
+            }).catch(err => {
+              this.$message.error("文件上传失败！");
+            });
+          }
         },
         created(){
             this.cropImg = this.defaultSrc;
