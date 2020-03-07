@@ -2,6 +2,7 @@ import axios from 'axios';
 import NProgress from 'nprogress'
 import 'nprogress/nprogress.css'
 import store from '../store/storeIndex'
+import {Message} from 'element-ui';
 
 export function commonRequest(config) {
   const instance = axios.create({
@@ -21,21 +22,17 @@ export function commonRequest(config) {
   });
   instance.interceptors.response.use(res=>{
     NProgress.done();
-    //表示请求成功
-    if(res.status == 200){
+
+    if(res.data.CODE == 'OK'){
       const authInfo = res.headers.authorization;
+      console.log("更新token" + authInfo);
       store.commit('saveAuthInfo',authInfo);
-      if(res.data.CODE == 'OK'){
-        return {status:'OK',message:res.data.MESSAGE,content:res.data.BODY};
-      }else{
-        return {status:'ERROR',message:res.data.MESSAGE,content:res.data.BODY};
-      }
+      return res.data.BODY;
     }
-    // 调用异常的情况
-    return {status:'ERROR',message:res.status,content:''};
+    Message.error(res.data.MESSAGE);
   },error => {
     NProgress.done();
-    return {status:'ERROR',message:error,content:''};
+    Message.error(error+"");
   });
   return instance(config);
 }
@@ -43,7 +40,7 @@ export function commonRequest(config) {
 export function commonRequestNoLoadding(config) {
   const instance = axios.create({
     baseURL:'/icop',
-    timeout:10000,
+    timeout:5000,
     responseEncoding:'utf8'
   });
   instance.interceptors.request.use(config=>{
@@ -54,17 +51,16 @@ export function commonRequestNoLoadding(config) {
   });
   instance.interceptors.response.use(res=>{
     //表示请求成功
-    if(res.status == 200){
-      if(res.data.CODE == 'OK'){
-        return {status:'OK',message:res.data.MESSAGE,content:res.data.BODY};
-      }else{
-        return {status:'ERROR',message:res.data.MESSAGE,content:res.data.BODY};
-      }
+    if(res.data.CODE == 'OK'){
+      const authInfo = res.headers.authorization;
+      console.log("更新token" + authInfo);
+      store.commit('saveAuthInfo',authInfo);
+      return res.data.BODY;
+    }else{
+      Message.error(res.data.MESSAGE+"");
     }
-    // 调用异常的情况
-    return {status:'ERROR',message:res.status,content:''};
   },error => {
-    return {status:'ERROR',message:error,content:''};
+    Message.error(error+"");
   });
   return instance(config);
 }
