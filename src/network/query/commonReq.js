@@ -51,7 +51,7 @@ export function requestVerificationCode() {
     },
     url:'/getValidateCode/getYzm.json',
     method:'post',
-    data:JSON.stringify({width:'100',height:'32',charNum:'4'}),
+    data:JSON.stringify({width:'100',height:'32',charNum:4}),
     responseType:'json'
   });
 }
@@ -65,6 +65,28 @@ export function uploadFile (files){
     url:'/sftp/uploadFile.json',
     method:'post',
     data:files,
+    responseType:'json'
+  });
+}
+
+/**
+ * b博文的发布保存
+ * @param blog
+ * @returns {*}
+ */
+export function saveOrPublishOfBolg(blog) {
+
+  return commonRequest({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url:'/BlogControlSvc/saveBlog.json',
+    method:'post',
+
+    data:JSON.stringify(blog),
+    params:{
+      userId:sessionStorage.getItem("userId")
+    },
     responseType:'json'
   });
 }

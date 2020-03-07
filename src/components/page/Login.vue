@@ -97,13 +97,10 @@
 
               this.$router.push('/');
 
-            }).catch(err => {
-              console.error("登录异常");
-              this.$message.error("登录失败：账号或密码错误！");
             });
 
           } else {
-            console.error('账号或密码错误！');
+            console.error('账号或密码格式错误！');
             return false;
           }
         });
@@ -112,19 +109,19 @@
       //获取图片验证码
       getVerificationCode() {
         requestVerificationCode().then(res => {
-          if(typeof res == "undefined" || res.status == 'ERROR'){
+          /*if(typeof res == "undefined" || res.status == 'ERROR'){
             this.$message({
               showClose: true,
               message: "[验证码]"+res.message,
               type: 'error'
             });
             return;
-          }
+          }*/
+          /*if(typeof res != "undefined"){
 
-          this.verificationImg = 'data:image/jpg;base64,' + res.content;
-        }).catch(err => {
-          console.debug("图片验证码获取错误：" + err);
-          this.$message.error("图片验证码获取错误：" + err);
+          }*/
+          this.verificationImg = 'data:image/jpg;base64,' + res;
+
         });
       },
       //跳转在注册
@@ -134,10 +131,10 @@
       initBaseInfo(res){
         //初始化登录用户信息
         //sessionStorage.clear();
-        sessionStorage.setItem("userId", res.content.userId);
-        sessionStorage.setItem("menuInfo", JSON.stringify(res.content.menuInfos));
+        sessionStorage.setItem("userId", res.userId);
+        sessionStorage.setItem("menuInfo", JSON.stringify(res.menuInfos));
         //初始化用户可以访问根资源集合
-        const menuInfo = res.content.menuInfos;
+        const menuInfo = res.menuInfos;
         const sources = [];
 
         for (let i = 0; i <menuInfo.length; i++) {
