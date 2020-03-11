@@ -72,7 +72,7 @@ export default new Router({
           component: resolve => require(['../components/page/Markdown.vue'], resolve),
           meta: {
             title: 'markdown编辑器',
-            requiresAuth: true
+            requiresAuth: false
           }
         },
         {
@@ -81,7 +81,7 @@ export default new Router({
           component: resolve => require(['../components/page/Upload.vue'], resolve),
           meta: {
             title: '文件上传',
-            requiresAuth: true
+            requiresAuth: false
           }
         },
         {
@@ -159,6 +159,32 @@ export default new Router({
     {
       path: '*',
       redirect: '/404'
-    }
+    },
+
+    {
+      path:'/blog',
+      component:resolve => require(['../components/common/blog/BlogHome.vue'],resolve),
+      meta: {title: '博文主页'},
+      children:[
+        {
+          path: '/blogLabel',
+          component: resolve => require(['../components/page/blog/BlogLabel.vue'], resolve),
+          meta: {
+            title: '博文标签',
+            // 是否需要认证字段
+            requiresAuth: false
+          }
+        },
+        {
+          path: '/blogDetail',
+          component: resolve => require(['../components/page/blog/BlogDetail.vue'], resolve),
+          meta: {
+            title: '博文详情',
+            // 是否需要认证字段
+            requiresAuth: false
+          }
+        }
+      ]
+    },
   ]
 })

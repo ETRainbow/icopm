@@ -70,12 +70,13 @@
             },
             change(value, render){
                 // render 为 markdown 解析后的结果
+              console.log(this.blog.draftContent);
+              console.log(this.blog.publishContent);
                 this.blog.publishContent = render;
             },
             submit(type){
-/*
                 console.log(this.blog.draftContent);
-              console.log(this.blog.html);*/
+              console.log(this.blog.html);
               blog.submitType=type;
               saveOrPublishOfBolg(this.blog).then(res=>{
                 this.$message.success('提交成功！');

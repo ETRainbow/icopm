@@ -9,15 +9,17 @@
     <el-row :gutter="20">
       <el-col :span="16" class="container">
         <el-divider content-position="center">我的文件列表</el-divider>
-        <el-table :data="tableData.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
+        <el-table :data="pageInfo.data.filter(data => !search || data.name.toLowerCase().includes(search.toLowerCase()))" style="width: 100%">
           <el-table-column label="名称" prop="name"></el-table-column>
-          <el-table-column label="上传日期" prop="date"></el-table-column>
-          <el-table-column align="right">
+          <el-table-column label="上传日期" prop="uploadTime"></el-table-column>
+          <el-table-column align="right" prop="path">
             <template slot="header" slot-scope="scope">
               <el-input v-model="search" size="mini" placeholder="输入关键字搜索"/>
             </template>
             <template slot-scope="scope">
-              <el-button size="mini" @click="handleEdit(scope.$index, scope.row)">查看</el-button>
+              <el-link  :href ="path" :underline="false" :disabled="fileType.toUpperCase().endsWith()'.png' || fileType!='.jpg'"><el-button size="mini" type="info">查看</el-button></el-link>
+              <el-link  :href ="path" download="fileName.jpg" :underline="false"><el-button size="mini" type="info">下载</el-button></el-link>
+<!--              <el-link :href ="fileUrl"><el-button size="mini" type="info" @click="handleDownload(scope.$index, scope.row)">下载</el-button></el-link>-->
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
           </el-table-column>
@@ -76,7 +78,36 @@
               imgSrc: '',
               cropImg: '',
               dialogVisible: false,
-              tableData: [{
+              fileUrl:"src\\assets\\img\\login-bg.jpg",
+              fileName:"wode.jpg",
+              pageInfo:{
+                pageNum:'0',
+                pageSize:'5',
+                total:'0',
+                pages:'0',
+                userId:'',
+                data:[{
+                  id:'20200229142918400507',
+                  uploadTime: '2016-05-02',
+                  name: 'image.png',
+                  path:'http://106.54.87.66:10006/blogs/images/20200229160947707694.png',
+                  fileType:'.sss'
+                },{
+                    id:'20200229142918400507',
+                    uploadTime: '2016-05-02',
+                    name: 'image.png',
+                    path:'http://106.54.87.66:10006/blogs/images/20200229160947707694.png',
+                    fileType:'.jpg'
+                },{
+                    id:'20200229142918400507',
+                    uploadTime: '2016-05-02',
+                    name: 'image.png',
+                    path:'http://106.54.87.66:10006/blogs/images/20200229160947707694.png',
+                    fileType:'.jpeg'
+                }]
+              },
+              tableData: [
+                {
                 date: '2016-05-02',
                 name: '王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt王小虎石帆胜丰沙发上fessfsfafsefs孙菲菲.txt',
                 address: '上海市普陀区金沙江路 1518 弄'
@@ -130,6 +161,16 @@
                     message: '图片上传接口上传失败，可更改为自己的服务器接口'
                 });
             },
+          handleDownload(){
+
+
+          },
+          queryFileList(){
+            pageInfo.userId=sessionStorage.getItem("userId");
+            queryFileList(pageInfo).then( (res) =>{
+              pageInfo.date=res;
+            });
+          },
           beforeUpload(files){
             var fileFormData = new FormData();
             fileFormData.set("uploadFile",files);

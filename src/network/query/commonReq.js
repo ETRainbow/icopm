@@ -69,6 +69,15 @@ export function uploadFile (files){
   });
 }
 
+export function queryFileList(param) {
+  return commonRequestNoLoadding({
+    url:'/sftp/queryDownLoadList.json',
+    method:'post',
+    data:param,
+    responseType:'json'
+  });
+}
+
 /**
  * b博文的发布保存
  * @param blog
