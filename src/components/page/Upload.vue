@@ -17,8 +17,8 @@
               <el-input v-model="search" size="mini" placeholder="输入关键字搜索"/>
             </template>
             <template slot-scope="scope">
-              <el-link  :href ="path" :underline="false" :disabled="fileType.toUpperCase().endsWith()'.png' || fileType!='.jpg'"><el-button size="mini" type="info">查看</el-button></el-link>
-              <el-link  :href ="path" download="fileName.jpg" :underline="false"><el-button size="mini" type="info">下载</el-button></el-link>
+              <!--<el-link  :href ="path" :underline="false" :disabled="fileType.toUpperCase().endsWith()'.png' || fileType!='.jpg'"><el-button size="mini" type="info">查看</el-button></el-link>-->
+<!--              <el-link  :href ="path" download="fileName.jpg" :underline="false"><el-button size="mini" type="info">下载</el-button></el-link>-->
 <!--              <el-link :href ="fileUrl"><el-button size="mini" type="info" @click="handleDownload(scope.$index, scope.row)">下载</el-button></el-link>-->
               <el-button size="mini" type="danger" @click="handleDelete(scope.$index, scope.row)">删除</el-button>
             </template>
@@ -57,6 +57,7 @@
                     <el-button type="primary" @click="dialogVisible = false">确 定</el-button>
                 </span>
             </el-dialog>
+
           </div>
         </div>
       </el-col>
@@ -67,7 +68,7 @@
 
 <script>
     import VueCropper  from 'vue-cropperjs';
-    import {uploadFile} from 'network/query/commonReq';
+    import {uploadFile,uploadFiles} from 'network/query/commonReq';
 
     export default {
         name: 'upload',
@@ -173,7 +174,11 @@
           },
           beforeUpload(files){
             var fileFormData = new FormData();
-            fileFormData.set("uploadFile",files);
+
+            // fileFormData.set("uploadFile",files);
+            // fileFormData.set("clientType","SMMS");
+            fileFormData.set("smfile",files);
+            fileFormData.set("format","json");
             uploadFile(fileFormData).then((res) =>{
               this.$message.success("文件上传成功！");
             }).catch(err => {
@@ -195,7 +200,7 @@
         font-size: 22px;
         color: #1f2f3d;
     }
-    .pre-img{   
+    .pre-img{
         width: 100px;
         height: 100px;
         background: #f8f8f8;

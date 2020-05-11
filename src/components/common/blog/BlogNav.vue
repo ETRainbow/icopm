@@ -2,11 +2,11 @@
   <div class="sidebar">
     <div class="sidebar-inner">
 
-      <div class="side-nav-wrapper">
+      <div class="sidebar-el-menu">
         <div class="side-nav-title">
           {{authorInfo.authorName}}
         </div>
-        <el-menu class="el-menu-vertical-demo" v-for="menuItem in menu" :default-active="onRoutes">
+        <el-menu class="sidebar-el-menu" v-for="menuItem in menu" :default-active="onRoutes">
           <el-menu-item  :index="menuItem.item_code">
             <template slot="title">
               <i :class="menuItem.item_icon"></i>
@@ -26,11 +26,6 @@
           <span>日志：{{sortData.blog_num}}</span>
           <el-divider direction="vertical"></el-divider>
           <span>标签：{{sortData.blot_label_num}}</span>
-          <!--<template v-for="item in sortData">
-
-
-            &lt;!&ndash;<span>{{item.sort_name}}/{{item.sort_num}}</span>&ndash;&gt;
-          </template>-->
         </div>
       </div>
 
@@ -90,11 +85,30 @@
 <style scoped>
   /*总部份*/
   .sidebar{
-    position: relative;
-    /*display: block;*/
-    /*width: 240px;*/
+    display: block;
+    position: absolute;
+    left: 0;
+    top: 0px;
+    bottom:0;
+    overflow-y: scroll;
   }
 
+  .sidebar-el-menu:not(.el-menu--collapse){
+    width: 250px;
+  }
+
+
+  .content-box {
+    position: absolute;
+    left: 250px;
+    right: 0;
+    top: 70px;
+    bottom: 0;
+    padding-bottom: 30px;
+    -webkit-transition: left .3s ease-in-out;
+    transition: left .3s ease-in-out;
+    background: #f0f0f0;
+  }
   /* 用户头像部分*/
   .sidebar-user-wrapper{
     padding: 20px 10px;
@@ -118,9 +132,7 @@
     background-color: #F2F6FC;
   }
   .side-nav-title{
-    /*width: 100%;*/
     height: 70px;
-    /*padding: 20px 0;*/
     background-color: #324157;
     color: white;
     text-align: center;

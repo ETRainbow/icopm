@@ -3,7 +3,7 @@
   <div class="blog-content-wrapper">
     <div class="blog-header-wrapper">
       <div class="header-title">
-        <span class="header-content-title">{{blogInfo.title}}</span>
+        <span class="header-content-title">{{blogInfo.title}}{{ids}}</span>
       </div>
       <div class="header-content-subTitle">
         <i class="el-icon-date"></i><span class="icon-gap">发布时间：{{blogInfo.publishTime}}</span>
@@ -32,15 +32,32 @@
 <script>
   import { mavonEditor } from 'mavon-editor'
   import 'mavon-editor/dist/css/index.css'
+  import {queryBlogDetailSvc} from 'network/query/commonReq';
 
   export default {
     name: "BlogDetail",
     components: {
     },
+    created() {
+
+      blogID= this.$route.params.blogId;
+      console.log("id==="+blogID);
+
+    },
+    computed: {
+      blogId() {
+        // We will see what `params` is shortly
+        console.log("id==="+this.$route.params.blogId);
+        ids = this.$route.params.id
+      }
+    },
+    mounted() {
+
+    },
     data(){
       return {
-        scroll:null,
         blogInfo:{
+          id:'',
           title:"Spring Framework 5.2.2 源码的环境搭建",
           type:'#Spring#SpringMvc#源码解读',
           publishTime:'2020/03/07',
@@ -76,9 +93,12 @@
           readNum:'666',
           lireNumL:'999',
         },
-        //collapse: true,
         methods:{
+          queryBlogDetail(){
+            queryBlogDetailSvc().then(res=>{
 
+            });
+          }
         }
 
       }

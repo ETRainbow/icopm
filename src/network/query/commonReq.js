@@ -1,4 +1,7 @@
-import {commonRequest,commonRequestNoLoadding} from 'network/request';
+import {commonRequest,commonRequestNoLoadding,testReq} from 'network/request';
+import axios from "axios";
+import store from "../../store/storeIndex";
+import {Message} from "element-ui";
 
 /**
  * icopm后台管理登录请求。
@@ -60,14 +63,18 @@ export function requestVerificationCode() {
  * 文件上传
  *
  */
+
 export function uploadFile (files){
-  return commonRequestNoLoadding({
-    url:'/sftp/uploadFile.json',
+  // return commonRequestNoLoadding({
+  return testReq({
+    //url:'/sftp/uploadFile.json',
+    url:'https://sm.ms/api/v2/upload',
     method:'post',
     data:files,
     responseType:'json'
   });
 }
+
 
 export function queryFileList(param) {
   return commonRequestNoLoadding({
@@ -84,7 +91,6 @@ export function queryFileList(param) {
  * @returns {*}
  */
 export function saveOrPublishOfBolg(blog) {
-
   return commonRequest({
     headers: {
       'Content-Type': 'application/json',
@@ -93,6 +99,43 @@ export function saveOrPublishOfBolg(blog) {
     method:'post',
 
     data:JSON.stringify(blog),
+    params:{
+      userId:sessionStorage.getItem("userId")
+    },
+    responseType:'json'
+  });
+}
+
+/**
+ *
+ * 标签查询
+ * @param blog
+ * @returns {*}
+ */
+export function queryLabel(param) {
+  return commonRequest({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url:'/BlogControlSvc/queryyLabel.json',
+    method:'post',
+    data:JSON.stringify(param),
+    params:{
+      userId:sessionStorage.getItem("userId")
+    },
+    responseType:'json'
+  });
+}
+
+
+export function queryBlogDetailSvc(param) {
+  return commonRequest({
+    headers: {
+      'Content-Type': 'application/json',
+    },
+    url:'/BlogControlSvc/queryBlog.json',
+    method:'post',
+    data:JSON.stringify(param),
     params:{
       userId:sessionStorage.getItem("userId")
     },

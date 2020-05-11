@@ -65,8 +65,31 @@ export function commonRequestNoLoadding(config) {
   return instance(config);
 }
 
+const smsm ="/smms";
+export function testReq(config) {
+  const instance = axios.create({
+    //baseURL:'http://localhost:10001/icop',
+    // 这个地方会用到vue.congif.js中的代理服务的地址
+    //baseURL:'/api',
+    //baseURL:process.env.VUE_APP_BASE_API, //让后端进行跨域处理
+    //baseURL:'https://sm.ms/api/v2',
+    timeout:1000000,
 
-
+    responseEncoding:'utf8',
+  });
+  instance.interceptors.request.use(config=>{
+    config.headers.authorization = "V0RLYj7PRasfMMLkm3Y1asELGs5QqgET";
+    return config;
+  },error => {
+    return config;
+  });
+  instance.interceptors.response.use(res=>{
+    console.log("请求返回："+res.data);
+  },error => {
+    console.log("请求返回："+error.data);
+  });
+  return instance(config);
+}
 
 
 

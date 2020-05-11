@@ -5,7 +5,7 @@ Vue.use(Router);
 
 export default new Router({
   //解决路径中#/路径（哈希模式）的问题
-  mode: 'history',
+  //mode: 'history',
   routes: [
     {
       path: '/',
@@ -176,7 +176,8 @@ export default new Router({
           }
         },
         {
-          path: '/blogDetail',
+          path: '/blogDetail/:blogId',
+          name:'blogDetail',
           component: resolve => require(['../components/page/blog/BlogDetail.vue'], resolve),
           meta: {
             title: '博文详情',

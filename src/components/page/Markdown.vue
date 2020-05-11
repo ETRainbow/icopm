@@ -15,16 +15,20 @@
           <el-form ref="form" :model="blog"  label-position="left" label-width="80px">
             <el-form-item >
               <el-button class="editor-btn" type="primary" @click="submit('2')">发布</el-button>
-              <el-button class="editor-btn" type="primary" @click="submit('0')">保存草稿</el-button>
+              <el-button class="editor-btn" type="primary" @click="submit('3')">保存草稿</el-button>
             </el-form-item>
             <el-form-item label="标题">
               <el-input v-model="blog.title"></el-input>
             </el-form-item>
             <el-form-item label="类型选择">
-              <el-select v-model="blog.type" placeholder="请选择">
-                <el-option key="bbk" label="步步高" value="bbk"></el-option>
-                <el-option key="xtc" label="小天才" value="xtc"></el-option>
-                <el-option key="imoo" label="imoo" value="imoo"></el-option>
+              <el-select v-model="blog.type"
+                         multiple
+                         collapse-tags
+                         :multiple-limit = limitNum
+                         placeholder="请选择" >
+                <div v-for="labelItem in labelInfo">
+                  <el-option :key="labelItem.labelCode" :label="labelItem.labelName" :value="labelItem.labelCode"></el-option>
+                </div>
               </el-select>
             </el-form-item>
               <mavon-editor v-model="blog.draftContent" ref="md" @imgAdd="$imgAdd" @change="change" style="min-height: 600px"/>
@@ -36,7 +40,7 @@
 </template>
 
 <script>
-  import {saveOrPublishOfBolg,uploadFile} from 'network/query/commonReq';
+  import {saveOrPublishOfBolg,uploadFile,queryLabel} from 'network/query/commonReq';
     import { mavonEditor } from 'mavon-editor'
     import 'mavon-editor/dist/css/index.css'
     export default {
@@ -44,20 +48,29 @@
         data: function(){
             return {
               blog:{
+                blogId:'',
                 draftContent:'',
                 publishContent:'',
                 title:'',
-                type:'',
+                type:[],
                 isPublish:''
               },
-                configs: {
-                }
+              limitNum:3,
+              labelInfo:[],
+              configs: {
+              }
             }
         },
         components: {
             mavonEditor
         },
-        methods: {
+      created() {
+        this.queryLabel();
+      },
+      mounted() {
+        //queryLabel();
+      },
+      methods: {
             // 将图片上传到服务器，返回地址替换到md中
             $imgAdd(pos, $file){
                 var formdata = new FormData();
@@ -70,19 +83,32 @@
             },
             change(value, render){
                 // render 为 markdown 解析后的结果
-              console.log(this.blog.draftContent);
-              console.log(this.blog.publishContent);
+              /*console.log(this.blog.draftContent);
+              console.log(this.blog.publishContent);*/
                 this.blog.publishContent = render;
             },
             submit(type){
-                console.log(this.blog.draftContent);
-              console.log(this.blog.html);
-              blog.submitType=type;
+
+              this.blog.isPublish=type;
+              // console.log("博文保存请求参数："+JSON.parse(this.blog));
               saveOrPublishOfBolg(this.blog).then(res=>{
-                this.$message.success('提交成功！');
+                this.blog.blogId = res;
+                console.log("博文IID:"+this.blog.blogId);
+                if(this.blog.isPublish == '2'){
+                  this.$message.success('发布成功！');
+                }else{
+                  this.$message.success('保存成功！');
+                }
+
               });
 
-            }
+            },
+          // 博文分类标签查询
+          queryLabel(){
+            queryLabel().then(res =>{
+              this.labelInfo = res;
+            })
+          }
         }
     }
 </script>
